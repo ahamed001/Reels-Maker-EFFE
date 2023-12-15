@@ -183,16 +183,11 @@ undo(): void {
 }
 
   clearLocalStorage() {
-    try {
-      console.log('Clearing local storage...');
       localStorage.removeItem('videoCreatorAppState');
       localStorage.removeItem('videoCreatorVideoData');
       localStorage.removeItem('videoCreatorAudioData');
       // Reload the page
       window.location.reload();
-    } catch (error) {
-      console.error('Error clearing local storage:', error);
-    }
   }
   
   get currentTimeInMs() {
