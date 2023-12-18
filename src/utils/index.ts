@@ -1,8 +1,6 @@
-
 export function getUid() {
   return Math.random().toString(36).substring(2, 9);
 }
-
 
 export function isHtmlVideoElement(
   element:

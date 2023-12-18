@@ -1,7 +1,7 @@
 import { fabric } from "fabric";
-import { type } from "os";
 
 export type EditorElementBase<T extends string, P> = {
+  _element: string | HTMLVideoElement | HTMLImageElement | HTMLCanvasElement;
   readonly id: string;
   fabricObject?: fabric.Object;
   name: string;
@@ -18,28 +18,28 @@ export type ImageEditorElement = EditorElementBase<
   "image",
   { src: string; elementId: string; imageObject?: fabric.Object, effect: Effect }
 >;
-
 export type AudioEditorElement = EditorElementBase<
   "audio",
   { src: string; elementId: string }
 >;
 export type TextEditorElement = EditorElementBase<
   "text",
+  { text: string; fontSize: number; fontWeight: number; textColor: string; fontFamily: string; splittedTexts: fabric.Text[]; }
+>;
+export type ShapesEditorElement = EditorElementBase<
+  "rectangle" | "circle" | "coverImage" | "coverVideo" | "coverRectangle" | "coverCircle",
   {
-    text: string;
-    fontSize: number;
-    fontWeight: number;
-    textColor: string;
-    fontFamily: string;
-    splittedTexts: fabric.Text[];
-  }
+    fillColor: any;
+    shapeObject: fabric.Rect; elementId: string; effect: Effect 
+}
 >;
 
 export type EditorElement =
   | VideoEditorElement
   | ImageEditorElement
   | AudioEditorElement
-  | TextEditorElement;
+  | TextEditorElement
+  | ShapesEditorElement;
 
 export type Placement = {
   x: number;
@@ -78,11 +78,10 @@ export type AnimationBase<T, P = {}> = {
 
 export type FadeInAnimation = AnimationBase<"fadeIn">;
 export type FadeOutAnimation = AnimationBase<"fadeOut">;
-
 export type BreatheAnimation = AnimationBase<"breathe">
-
 export type SlideDirection = "left" | "right" | "top" | "bottom";
 export type SlideTextType = 'none'|'character';
+
 export type SlideInAnimation = AnimationBase<"slideIn", {
   direction: SlideDirection,
   useClipPath: boolean,
@@ -111,6 +110,5 @@ export type MenuOption =
   | "Animation"
   | "Filters"
   | "Fill"
-  | "NewEdit";
-
-
+  | "NewEdit"
+  | "Shapes";

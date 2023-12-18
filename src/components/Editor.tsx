@@ -48,14 +48,14 @@ export const Editor = observer(() => {
     });
   }, []);
   return (
-    <div className="grid grid-rows-[20px_500px_1fr] grid-cols-[60px_250px_900px_1fr] h-[100%]">
+    <div className="grid grid-rows-[20px_550px_1fr] grid-cols-[60px_250px_900px_1fr] h-[100%]">
       <div className="tile row-span-2 flex flex-col">
         <Menu />
       </div>
       <div className="row-span-2 flex flex-col overflow-auto px-4 h-[100%]">
         <Resources />
       </div>
-      <canvas id="canvas" className="h-[500px] w-[800px] row col-start-3" />
+      <canvas id="canvas" className="h-[500px] w-[800px] row col-start-3 my-10" />
       <div className="col-start-4 row-start-2">
         <ElementsPanel />
       </div>

@@ -16,7 +16,6 @@ export const TextResource = observer(
     const store = React.useContext(StoreContext);
     const [textColor, setTextColor] = React.useState("#ffffff");
     const handleColorChange = (color: any) => {
-      // console.log("Color changed:", color.hex);
       setTextColor(color.hex);
     };
     const [selectedFont, setSelectedFont] = useState<string>('Arial'); 
@@ -51,7 +50,7 @@ export const TextResource = observer(
             })
           }
         >
-          <MdAdd size="25" />
+          <MdAdd size="25"/>
         </button>
         </div>
         <div>

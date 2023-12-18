@@ -2,6 +2,80 @@ import { EditorElement, EffecType } from "@/types";
 import { fabric } from "fabric";
 // https://jsfiddle.net/i_prikot/pw7yhaLf/
 
+export const CoverRectangle = fabric.util.createClass(fabric.Rect, {
+    type: "coverRectangle",
+    customFilter: "none",
+    disableCrop: false,
+    // Add other properties specific to your rectangles
+  
+    _render(ctx: CanvasRenderingContext2D) {
+      if (this.disableCrop) {
+        this.callSuper("_render", ctx);
+        return;
+      }
+  
+      ctx.save();
+      const customFilter: EffecType = this.customFilter;
+      ctx.filter = getFilterFromEffectType(customFilter);
+      ctx.fillStyle = this.fill;
+      ctx.fillRect(
+        -this.width / 2,
+        -this.height / 2,
+        this.width,
+        this.height
+      );
+      ctx.filter = "none";
+      ctx.restore();
+    },
+  });
+  
+  export const CoverCircle = fabric.util.createClass(fabric.Ellipse, {
+    type: "coverCircle",
+    customFilter: "none",
+    disableCrop: false,
+  
+    _render(ctx: CanvasRenderingContext2D) {
+      if (this.disableCrop) {
+        this.callSuper("_render", ctx);
+        return;
+      }
+  
+      ctx.save();
+      const customFilter: EffecType = this.customFilter;
+      ctx.filter = getFilterFromEffectType(customFilter);
+      ctx.fillStyle = this.fill;
+      ctx.beginPath();
+      ctx.ellipse(
+        0,
+        0,
+        this.rx,
+        this.ry,
+        0,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      ctx.filter = "none";
+      ctx.restore();
+    },
+  });
+  
+  declare module "fabric" {
+    namespace fabric {
+      class CoverRectangle extends Rect {
+        type: "coverRectangle";
+        disableCrop: boolean;
+      }
+      class CoverCircle extends Ellipse {
+        type: "coverCircle";
+        disableCrop: boolean;
+      }
+    }
+  }
+  
+  fabric.CoverRectangle = CoverRectangle;
+  fabric.CoverCircle = CoverCircle;
+
 export const CoverImage = fabric.util.createClass(fabric.Image, {
     type: "coverImage",
 
@@ -232,4 +306,23 @@ export class FabricUitls {
         });
         return clipRectangle;
     }
-}
+
+    static createFabricObject(element: EditorElement) {
+        switch (element.type) {
+          case "coverImage":
+            return new fabric.CoverImage(element._element, {
+            });
+          case "coverVideo":
+            return new fabric.CoverVideo(element._element, {
+            });
+          case "coverRectangle":
+            return new fabric.CoverRectangle({
+            });
+          case "coverCircle":
+            return new fabric.CoverCircle({
+            });
+          default:
+            return null;
+        }
+      }
+    }

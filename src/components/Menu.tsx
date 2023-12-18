@@ -11,7 +11,8 @@ from "react-icons/md";
 import { 
   IoMusicalNotesOutline ,
   IoCloudDownloadOutline,
-  IoText 
+  IoText,
+  IoShapesOutline 
 } 
 from "react-icons/io5";
 import { TbFilters } from "react-icons/tb";
@@ -136,6 +137,13 @@ const MENU_OPTIONS = [
     icon: IoCloudDownloadOutline,
     action: (store: Store) => {
       store.setSelectedMenuOption("Export");
+    },
+  },
+  {
+    name: "Shapes",
+    icon: IoShapesOutline ,
+    action: (store: Store) => {
+      store.setSelectedMenuOption("Shapes");
     },
   },
 ];

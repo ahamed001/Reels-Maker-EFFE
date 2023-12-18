@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["fabric"],
     "target": "esnext",
     "lib": [
       "dom",

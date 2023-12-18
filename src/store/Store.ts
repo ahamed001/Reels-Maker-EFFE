@@ -2,33 +2,31 @@
 import { autorun, makeAutoObservable, runInAction  } from 'mobx';
 import { fabric } from 'fabric';
 import { getUid, isHtmlAudioElement, isHtmlImageElement, isHtmlVideoElement } from '@/utils';
-import anime, { get } from 'animejs';
-import { MenuOption, EditorElement, Animation, TimeFrame, VideoEditorElement, AudioEditorElement, Placement, ImageEditorElement, Effect, TextEditorElement } from '../types';
+import anime from 'animejs';
+import { MenuOption, EditorElement, Animation, TimeFrame, VideoEditorElement, AudioEditorElement, Placement, ImageEditorElement, Effect, TextEditorElement, ShapesEditorElement } from '../types';
 import { FabricUitls } from '@/utils/fabric-utils';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import {  toBlobURL } from '@ffmpeg/util';
+import { toBlobURL } from '@ffmpeg/util';
+
+
+const defaultFillColor: string = "#ffffff";
 
 export class Store {
 
   canvas: fabric.Canvas | null
-
   backgroundColor: string;
-
   selectedMenuOption: MenuOption;
   audios: string[]
   videos: string[]
   images: string[]
   editorElements: EditorElement[]
   selectedElement: EditorElement | null;
-
   maxTime: number
   animations: Animation[]
   animationTimeLine: anime.AnimeTimelineInstance;
   playing: boolean;
-
   currentKeyFrame: number;
   fps: number;
-
   possibleVideoFormats: string[] = ['mp4', 'webm'];
   selectedVideoFormat: 'mp4' | 'webm';
 
@@ -105,6 +103,15 @@ export class Store {
       localStorage.setItem('videoCreatorAudioData', JSON.stringify(audioDataToSave));
     };
   }
+
+  clearLocalStorage() {
+    localStorage.removeItem('videoCreatorAppState');
+    localStorage.removeItem('videoCreatorVideoData');
+    localStorage.removeItem('videoCreatorAudioData');
+    // Reload the page
+    window.location.reload();
+}
+
   private undoStack: { action: string; data: EditorElement[] }[] = [];
 
   addToUndoStack(action: string, data: EditorElement[]): void {
@@ -181,14 +188,6 @@ undo(): void {
   }
 });
 }
-
-  clearLocalStorage() {
-      localStorage.removeItem('videoCreatorAppState');
-      localStorage.removeItem('videoCreatorVideoData');
-      localStorage.removeItem('videoCreatorAudioData');
-      // Reload the page
-      window.location.reload();
-  }
   
   get currentTimeInMs() {
     return this.currentKeyFrame * 1000 / this.fps;
@@ -578,6 +577,7 @@ undo(): void {
             type: "none",
           }
         },
+        _element: ''
       },
     );
   }
@@ -614,6 +614,7 @@ undo(): void {
             type: "none",
           }
         },
+        _element: ''
       },
     );
   }
@@ -646,7 +647,8 @@ undo(): void {
         properties: {
           elementId: `audio-${id}`,
           src: audioElement.src,
-        }
+        },
+        _element: ''
       },
     );
   }
@@ -686,8 +688,43 @@ undo(): void {
           fontFamily: options.fontFamily,
           splittedTexts: [],
         },
+        _element: ''
       },
     );
+  }
+
+  addRectangle(index: number) {
+    const rectangleElement: ShapesEditorElement = {
+      id: getUid(),
+      type: "rectangle",
+      name: "Rectangle",
+      placement: { x: 0, y: 0, width: 200, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
+      timeFrame: { start: 0, end: this.maxTime },
+      properties: {
+        elementId: `rectangle-${index}`, effect: { type: "none" },
+        shapeObject: new fabric.Rect(),
+        fillColor: undefined
+      },
+      _element: ''
+    };
+    this.editorElements.push(rectangleElement);
+  }
+
+  addCircle(index: number) {
+    const circleElement: ShapesEditorElement = {
+      id: getUid(),
+      type: "circle",
+      name: "Circle",
+      placement: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
+      timeFrame: { start: 0, end: this.maxTime },
+      properties: {
+        elementId: `circle-${index}`, effect: { type: "none" },
+        shapeObject: new fabric.Rect(),
+        fillColor: undefined
+      },
+      _element: ''
+    };
+    this.editorElements.push(circleElement);
   }
 
   updateVideoElements() {
@@ -1068,6 +1105,111 @@ undo(): void {
           });
           break;
         }
+
+        case "rectangle": {
+          const rectObject = new fabric.Rect({
+            name: element.id,
+            left: element.placement.x,
+            top: element.placement.y,
+            scaleX: element.placement.scaleX,
+            scaleY: element.placement.scaleY,
+            width: element.placement.width,
+            height: element.placement.height,
+            angle: element.placement.rotation,
+            objectCaching: false,
+            selectable: true,
+            lockUniScaling: true,
+            fill: element.properties.fillColor || defaultFillColor,
+          });
+        
+          element.fabricObject = rectObject;
+          canvas.add(rectObject);
+          canvas.bringToFront(rectObject);
+        
+          canvas.on("object:modified", function (e) {
+            if (!e.target) return;
+            const target = e.target;
+            if (target !== rectObject) return;
+        
+            const placement = element.placement;
+            const newPlacement: Placement = {
+              ...placement,
+              x: target.left ?? placement.x,
+              y: target.top ?? placement.y,
+              rotation: target.angle ?? placement.rotation,
+              width: target.width ?? placement.width,
+              height: target.height ?? placement.height,
+              scaleX: target.scaleX ?? placement.scaleX,
+              scaleY: target.scaleY ?? placement.scaleY,
+            };
+        
+            const newElement = {
+              ...element,
+              placement: newPlacement,
+              properties: {
+                ...element.properties,
+              },
+            };
+        
+            store.updateEditorElement(newElement);
+          });
+          break;
+        }
+        
+
+
+
+
+        case "circle": {
+          const circleObject = new fabric.Circle({
+            name: element.id,
+            left: element.placement.x,
+            top: element.placement.y,
+            scaleX: element.placement.scaleX,
+            scaleY: element.placement.scaleY,
+            radius: element.placement.width / 2, // Use width as radius for circles
+            angle: element.placement.rotation,
+            objectCaching: false,
+            selectable: true,
+            lockUniScaling: true,
+            fill: element.properties.fillColor || defaultFillColor,
+          });
+        
+          element.fabricObject = circleObject;
+          canvas.add(circleObject);
+          canvas.bringToFront(circleObject);
+        
+          canvas.on("object:modified", function (e) {
+            if (!e.target) return;
+            const target = e.target as fabric.Circle;
+        
+            const placement = element.placement;
+            const newPlacement: Placement = {
+              ...placement,
+              x: target.left ?? placement.x,
+              y: target.top ?? placement.y,
+              rotation: target.angle ?? placement.rotation,
+              width: (target.radius ?? 0) * 2,
+              height: (target.radius ?? 0) * 2,
+              scaleX: target.scaleX ?? placement.scaleX,
+              scaleY: target.scaleY ?? placement.scaleY,
+            };
+        
+            const newElement = {
+              ...element,
+              placement: newPlacement,
+              properties: {
+                ...element.properties,
+              },
+            };
+        
+            store.updateEditorElement(newElement);
+          });
+          break;
+        }
+        
+        
+
         default: {
           throw new Error("Not implemented");
         }
