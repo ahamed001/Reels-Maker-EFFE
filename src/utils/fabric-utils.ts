@@ -264,8 +264,6 @@ function getFilterFromEffectType(effectType: EffecType){
     }
 }
 
-
-
 declare module "fabric" {
     namespace fabric {
         class CoverVideo extends Image {
@@ -285,7 +283,6 @@ declare module "fabric" {
 
 fabric.CoverImage = CoverImage;
 fabric.CoverVideo = CoverVideo;
-
 
 export class FabricUitls {
     static getClipMaskRect(editorElement: EditorElement, extraOffset: number) {
