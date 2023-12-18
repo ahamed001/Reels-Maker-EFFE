@@ -8,7 +8,6 @@ import { FabricUitls } from '@/utils/fabric-utils';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { toBlobURL } from '@ffmpeg/util';
 
-
 const defaultFillColor: string = "#ffffff";
 
 export class Store {
@@ -182,7 +181,6 @@ undo(): void {
               : element
           );
           break;
-        // Add cases for other actions if needed
       }
     }
   }
@@ -1155,21 +1153,18 @@ undo(): void {
           });
           break;
         }
-        
-
-
-
 
         case "circle": {
+          
           const circleObject = new fabric.Circle({
             name: element.id,
             left: element.placement.x,
             top: element.placement.y,
             scaleX: element.placement.scaleX,
             scaleY: element.placement.scaleY,
-            radius: element.placement.width / 2, // Use width as radius for circles
+            radius: element.placement.width / 2, 
             angle: element.placement.rotation,
-            objectCaching: false,
+            objectCaching: true,
             selectable: true,
             lockUniScaling: true,
             fill: element.properties.fillColor || defaultFillColor,
@@ -1207,8 +1202,6 @@ undo(): void {
           });
           break;
         }
-        
-        
 
         default: {
           throw new Error("Not implemented");
@@ -1228,7 +1221,6 @@ undo(): void {
     this.updateTimeTo(this.currentTimeInMs);
     store.canvas.renderAll();
   }
-
 }
 
 export function isEditorAudioElement(

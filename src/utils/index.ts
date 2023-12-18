@@ -1,5 +1,7 @@
 export function getUid() {
-  return Math.random().toString(36).substring(2, 9);
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 9);
+  return `${timestamp}${randomPart}`;
 }
 
 export function isHtmlVideoElement(
@@ -36,7 +38,6 @@ export function isHtmlAudioElement(
   if (!element) return false;
   return element.tagName === "AUDIO";
 }
-
 
 export function formatTimeToMinSec(time: number) {
   const minutes = Math.floor(time / 60);
