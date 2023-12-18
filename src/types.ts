@@ -26,13 +26,39 @@ export type TextEditorElement = EditorElementBase<
   "text",
   { text: string; fontSize: number; fontWeight: number; textColor: string; fontFamily: string; splittedTexts: fabric.Text[]; }
 >;
-export type ShapesEditorElement = EditorElementBase<
-  "rectangle" | "circle" | "coverImage" | "coverVideo" | "coverRectangle" | "coverCircle",
-  {
-    fillColor: any;
-    shapeObject: fabric.Rect; elementId: string; effect: Effect 
-}
->;
+// export type ShapesEditorElement = EditorElementBase<
+//   "rectangle" | "circle" | "coverImage" | "coverVideo" | "coverRectangle" | "coverCircle",
+//   {
+//     fillColor: any;
+//     shapeObject: fabric.Rect; elementId: string; effect: Effect 
+// }
+// >;
+
+export type ShapesEditorElement =
+  | EditorElementBase<
+    "rectangle", 
+    { fillColor: any; shapeObject: fabric.Rect; elementId: string; effect: Effect }
+    >
+  // | EditorElementBase<
+  //   "circle", 
+  //   { fillColor: any; shapeObject: fabric.Circle; elementId: string; effect: Effect }
+  // >
+  | EditorElementBase<
+    "coverImage", 
+    { fillColor: any; shapeObject: fabric.Object; elementId: string; effect: Effect }
+  >
+  | EditorElementBase<
+    "coverVideo", 
+    { fillColor: any; shapeObject: fabric.Object; elementId: string; effect: Effect }
+  >
+  | EditorElementBase<
+    "coverRectangle", 
+    { fillColor: any; shapeObject: fabric.Rect | fabric.Circle; elementId: string; effect: Effect }
+  >;
+  // | EditorElementBase<
+  //   "coverCircle", 
+  //   { fillColor: any; shapeObject: fabric.Rect | fabric.Circle; elementId: string; effect: Effect }
+  // >;
 
 export type EditorElement =
   | VideoEditorElement

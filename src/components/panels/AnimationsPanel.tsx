@@ -27,7 +27,7 @@ export const AnimationsPanel = observer(() => {
 
   return (
     <>
-      <div className="text-xl px-[16px] pt-[16px] pb-[16px] font-bold">
+      <div className="text-sm px-[16px] pt-[16px] pb-[16px] font-bold">
         Animations
       </div>
       {selectedElement && !hasFadeInAnimation ? (

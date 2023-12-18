@@ -3,7 +3,19 @@ import { autorun, makeAutoObservable, runInAction  } from 'mobx';
 import { fabric } from 'fabric';
 import { getUid, isHtmlAudioElement, isHtmlImageElement, isHtmlVideoElement } from '@/utils';
 import anime from 'animejs';
-import { MenuOption, EditorElement, Animation, TimeFrame, VideoEditorElement, AudioEditorElement, Placement, ImageEditorElement, Effect, TextEditorElement, ShapesEditorElement } from '../types';
+import { 
+  MenuOption, 
+  EditorElement, 
+  Animation, 
+  TimeFrame, 
+  VideoEditorElement, 
+  AudioEditorElement, 
+  Placement, 
+  ImageEditorElement, 
+  Effect, 
+  TextEditorElement, 
+  ShapesEditorElement 
+} from '../types';
 import { FabricUitls } from '@/utils/fabric-utils';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { toBlobURL } from '@ffmpeg/util';
@@ -708,22 +720,26 @@ undo(): void {
     this.editorElements.push(rectangleElement);
   }
 
-  addCircle(index: number) {
-    const circleElement: ShapesEditorElement = {
-      id: getUid(),
-      type: "circle",
-      name: "Circle",
-      placement: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
-      timeFrame: { start: 0, end: this.maxTime },
-      properties: {
-        elementId: `circle-${index}`, effect: { type: "none" },
-        shapeObject: new fabric.Rect(),
-        fillColor: undefined
-      },
-      _element: ''
-    };
-    this.editorElements.push(circleElement);
-  }
+  // addCircle(index: number) {
+  //   const circleElement: ShapesEditorElement = {
+  //     id: getUid(),
+  //     type: "circle",
+  //     name: "Circle",
+  //     placement: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
+  //     timeFrame: { start: 0, end: this.maxTime },
+  //     properties: {
+  //       elementId: `circle-${index}`, effect: { type: "none" },
+  //       shapeObject: new fabric.Circle(), 
+  //       fillColor: undefined
+  //     },
+  //     _element: ''
+  //   };
+  //   this.editorElements.push(circleElement);
+  //   if (this.canvas) {
+  //     this.canvas.add(circleElement.properties.shapeObject);
+  //     this.canvas.renderAll(); // Render the canvas
+  //   }
+  // }  
 
   updateVideoElements() {
     this.editorElements.filter(
@@ -1124,10 +1140,9 @@ undo(): void {
           canvas.add(rectObject);
           canvas.bringToFront(rectObject);
         
-          canvas.on("object:modified", function (e) {
-            if (!e.target) return;
-            const target = e.target;
-            if (target !== rectObject) return;
+          // Attach event listener directly to the fabric object
+          rectObject.on("modified", function (options) {
+            const target = options.target as fabric.Rect;
         
             const placement = element.placement;
             const newPlacement: Placement = {
@@ -1153,56 +1168,56 @@ undo(): void {
           });
           break;
         }
+        
 
-        case "circle": {
-          
-          const circleObject = new fabric.Circle({
-            name: element.id,
-            left: element.placement.x,
-            top: element.placement.y,
-            scaleX: element.placement.scaleX,
-            scaleY: element.placement.scaleY,
-            radius: element.placement.width / 2, 
-            angle: element.placement.rotation,
-            objectCaching: true,
-            selectable: true,
-            lockUniScaling: true,
-            fill: element.properties.fillColor || defaultFillColor,
-          });
+        // case "circle": {
+        //   const circleObject = new fabric.Circle({
+        //     name: element.id,
+        //     left: element.placement.x,
+        //     top: element.placement.y,
+        //     scaleX: element.placement.scaleX,
+        //     scaleY: element.placement.scaleY,
+        //     radius: element.placement.width / 2,
+        //     angle: element.placement.rotation,
+        //     objectCaching: true,
+        //     selectable: true,
+        //     lockUniScaling: true,
+        //     fill: element.properties.fillColor || defaultFillColor,
+        //   });
         
-          element.fabricObject = circleObject;
-          canvas.add(circleObject);
-          canvas.bringToFront(circleObject);
+        //   element.fabricObject = circleObject;
+        //   canvas.add(circleObject);
+        //   canvas.bringToFront(circleObject);
         
-          canvas.on("object:modified", function (e) {
-            if (!e.target) return;
-            const target = e.target as fabric.Circle;
+        //   canvas.on("object:modified", function (e) {
+        //     if (!e.target) return;
+        //     const target = e.target as fabric.Circle;
         
-            const placement = element.placement;
-            const newPlacement: Placement = {
-              ...placement,
-              x: target.left ?? placement.x,
-              y: target.top ?? placement.y,
-              rotation: target.angle ?? placement.rotation,
-              width: (target.radius ?? 0) * 2,
-              height: (target.radius ?? 0) * 2,
-              scaleX: target.scaleX ?? placement.scaleX,
-              scaleY: target.scaleY ?? placement.scaleY,
-            };
+        //     const placement = element.placement;
+        //     const newPlacement: Placement = {
+        //       ...placement,
+        //       x: target.left ?? placement.x,
+        //       y: target.top ?? placement.y,
+        //       rotation: target.angle ?? placement.rotation,
+        //       width: (target.radius ?? 0) * 2,
+        //       height: (target.radius ?? 0) * 2,
+        //       scaleX: target.scaleX ?? placement.scaleX,
+        //       scaleY: target.scaleY ?? placement.scaleY,
+        //     };
         
-            const newElement = {
-              ...element,
-              placement: newPlacement,
-              properties: {
-                ...element.properties,
-              },
-            };
+        //     const newElement = {
+        //       ...element,
+        //       placement: newPlacement,
+        //       properties: {
+        //         ...element.properties,
+        //       },
+        //     };
         
-            store.updateEditorElement(newElement);
-          });
-          break;
-        }
-
+        //     store.updateEditorElement(newElement);
+        //   });
+        //   break;
+        // }
+        
         default: {
           throw new Error("Not implemented");
         }

@@ -5,9 +5,8 @@ import { fabric } from 'fabric';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { MdAdd } from 'react-icons/md';
-import { GoCircle } from "react-icons/go";
 import { PiRectangleLight } from "react-icons/pi";
-
+// import { GoCircle } from "react-icons/go";
 
 type ShapesResourceProps = {
   image: string;
@@ -25,14 +24,14 @@ export const Rectangle: React.FC<ShapesResourceProps> = ({ onClick }) => {
   );
 };
 
-export const Circle: React.FC<ShapesResourceProps> = ({ onClick }) => {
-  return (
-    <div onClick={onClick} className='my-2'>
-      <GoCircle className='mx-auto text-8xl cursor-pointer hover:text-slate-300'/>
-      <p className='text-sm flex justify-center my-1'>Circle</p>
-    </div>
-  );
-};
+// export const Circle: React.FC<ShapesResourceProps> = ({ onClick }) => {
+//   return (
+//     <div onClick={onClick} className='my-2'>
+//       <GoCircle className='mx-auto text-8xl cursor-pointer hover:text-slate-300'/>
+//       <p className='text-sm flex justify-center my-1'>Circle</p>
+//     </div>
+//   );
+// };
 
 export const ShapesResource = observer(
   ({ image, shapeType, onClick }: ShapesResourceProps) => {
@@ -58,22 +57,22 @@ export const ShapesResource = observer(
         store.editorElements.push(rectangleElement);
 
       } else if (shapeType === "circle") {
-        const circleElement: ShapesEditorElement = {
-          id: getUid(),
-          type: "circle",
-          name: "Circle",
-          placement: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
-          timeFrame: { start: 0, end: store.maxTime },
-          properties: {
-            elementId: `circle-${getUid()}`, effect: { type: "none" },
-            shapeObject: new fabric.Rect(),
-            fillColor: undefined
-          },
-          _element: ''
-        };
-        store.editorElements.push(circleElement);
-      }
-    };
+    //     const circleElement: ShapesEditorElement = {
+    //       id: getUid(),
+    //       type: "circle",
+    //       name: "Circle",
+    //       placement: { x: 0, y: 0, width: 100, height: 100, rotation: 0, scaleX: 1, scaleY: 1 },
+    //       timeFrame: { start: 0, end: store.maxTime },
+    //       properties: {
+    //         elementId: `circle-${getUid()}`, effect: { type: "none" },
+    //         shapeObject: new fabric.Circle(),
+    //         fillColor: undefined
+    //       },
+    //       _element: ''
+    //     };
+    //     store.editorElements.push(circleElement);
+       }
+     };
 
     return (
       <div className="rounded-lg overflow-hidden items-center bg-slate-800 m-[15px] flex flex-col relative">

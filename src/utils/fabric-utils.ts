@@ -1,13 +1,20 @@
 import { EditorElement, EffecType } from "@/types";
 import { fabric } from "fabric";
+import { getUid } from "./index";
 // https://jsfiddle.net/i_prikot/pw7yhaLf/
 
 export const CoverRectangle = fabric.util.createClass(fabric.Rect, {
     type: "coverRectangle",
     customFilter: "none",
     disableCrop: false,
-    // Add other properties specific to your rectangles
   
+    // properties: {
+    //     elementId: `circle-${getUid()}`,
+    //     effect: { type: "none" },
+    //     shapeObject: new fabric.Rect(),
+    //     fillColor: undefined,
+    //   },
+      
     _render(ctx: CanvasRenderingContext2D) {
       if (this.disableCrop) {
         this.callSuper("_render", ctx);
@@ -29,36 +36,35 @@ export const CoverRectangle = fabric.util.createClass(fabric.Rect, {
     },
   });
   
-  export const CoverCircle = fabric.util.createClass(fabric.Ellipse, {
-    type: "coverCircle",
-    customFilter: "none",
-    disableCrop: false,
+//   export const CoverCircle = fabric.util.createClass(fabric.Ellipse, {
+//     type: "coverCircle",
+//     customFilter: "none",
+//     disableCrop: false,
   
-    _render(ctx: CanvasRenderingContext2D) {
-      if (this.disableCrop) {
-        this.callSuper("_render", ctx);
-        return;
-      }
+//     properties: {
+//       elementId: "",
+//       effect: { type: "none" },
+//       shapeObject: new fabric.Circle(),
+//       fillColor: undefined,
+//     },
   
-      ctx.save();
-      const customFilter: EffecType = this.customFilter;
-      ctx.filter = getFilterFromEffectType(customFilter);
-      ctx.fillStyle = this.fill;
-      ctx.beginPath();
-      ctx.ellipse(
-        0,
-        0,
-        this.rx,
-        this.ry,
-        0,
-        0,
-        2 * Math.PI
-      );
-      ctx.fill();
-      ctx.filter = "none";
-      ctx.restore();
-    },
-  });
+//     _render(ctx: CanvasRenderingContext2D) {
+//       if (this.disableCrop) {
+//         this.callSuper("_render", ctx);
+//         return;
+//       }
+  
+//       ctx.save();
+//       const customFilter: EffecType = this.customFilter;
+//       ctx.filter = getFilterFromEffectType(customFilter);
+//       ctx.fillStyle = this.fill;
+//       ctx.beginPath();
+//       ctx.ellipse(0, 0, this.rx, this.ry, 0, 0, 2 * Math.PI);
+//       ctx.fill();
+//       ctx.filter = "none";
+//       ctx.restore();
+//     },
+//   });
   
   declare module "fabric" {
     namespace fabric {
@@ -66,15 +72,21 @@ export const CoverRectangle = fabric.util.createClass(fabric.Rect, {
         type: "coverRectangle";
         disableCrop: boolean;
       }
-      class CoverCircle extends Ellipse {
-        type: "coverCircle";
-        disableCrop: boolean;
-      }
+    //   class CoverCircle extends Ellipse {
+    //     type: "coverCircle";
+    //     disableCrop: boolean;
+    //     properties: {
+    //       elementId: string;
+    //       effect: { type: EffecType };
+    //       shapeObject: fabric.Circle;
+    //       fillColor: any;
+    //     };
+    //   }
     }
   }
   
   fabric.CoverRectangle = CoverRectangle;
-  fabric.CoverCircle = CoverCircle;
+//   fabric.CoverCircle = CoverCircle;
 
 export const CoverImage = fabric.util.createClass(fabric.Image, {
     type: "coverImage",
@@ -315,9 +327,9 @@ export class FabricUitls {
           case "coverRectangle":
             return new fabric.CoverRectangle({
             });
-          case "coverCircle":
-            return new fabric.CoverCircle({
-            });
+        //   case "coverCircle":
+        //     return new fabric.CoverCircle({
+        //     });
           default:
             return null;
         }

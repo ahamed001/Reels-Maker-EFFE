@@ -31,7 +31,7 @@ export const Editor = observer(() => {
     });
     fabric.Object.prototype.transparentCorners = false;
     fabric.Object.prototype.cornerColor = "#00a0f5";
-    fabric.Object.prototype.cornerStyle = "circle";
+    // fabric.Object.prototype.cornerStyle = "circle";
     fabric.Object.prototype.cornerStrokeColor = "#0063d8";
     fabric.Object.prototype.cornerSize = 10;
     // canvas mouse down without target should deselect active object
